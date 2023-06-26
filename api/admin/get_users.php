@@ -12,33 +12,27 @@ $data = json_decode(file_get_contents("php://input"));
 // The request is using the POST method
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $datas = [];
-    $sql = "SELECT cd.*
-            FROM car_driver AS cd";
-    $query = $conn->prepare($sql);
+    $sql = "SELECT p.*
+            FROM profile AS p
+            WHERE p.status = 10";
+    $query = $conn_main->prepare($sql);
     $query->execute();
     $result = $query->fetchAll(PDO::FETCH_OBJ);
 
     if($query->rowCount() > 0){                        //count($result)  for odbc
         foreach($result as $rs){
-            $sql = "SELECT p.*
-                    FROM profile AS p
-                    WHERE id=:id";
-            $query = $conn_main->prepare($sql);            
-            $query->bindParam(':id', $rs->user_id, PDO::PARAM_INT);
-            $query->execute();
-            $res = $query->fetch(PDO::FETCH_OBJ);
             $datas[] = [
-                'id'=> $rs->id,
-                'user_id'=> $rs->user_id,
-                'name'=> $res->fname.$res->name.' '.$res->sname
+                'user_id' => $rs->user_id,
+                'name' => $rs->fname.$rs->name. ' '. $rs->sname,
             ];
         }
+
         http_response_code(200);
-        echo json_encode(array('status' => true, 'message' => 'สำเร็จ', 'data' => $datas));
+        echo json_encode(array('status' => 'success', 'message' => 'สำเร็จ', 'data' => $datas));
         exit();
     }
     http_response_code(200);
-    echo json_encode(array('status' => false, 'message' => 'ไม่พบข้อมูล ','data' => []));
+    echo json_encode(array('status' => 'error', 'message' => 'ไม่พบข้อมูล ','data' => []));
     exit();
     
 }

@@ -14,22 +14,22 @@ $data = json_decode(file_get_contents("php://input"));
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $datas = array();  
-    $car_type = $data->car_type;  
-    
+    $driver = $data->driver;     
      
     
     try{
-        if ($car_type->act == 'insert') {
-            if ($car_type->car_type_name == '') {
+        if ($driver->act == 'insert') {
+            if ($driver->user_id == '') {
               http_response_code(200);
-              echo json_encode(array('status' => false, 'message' => 'no car_type_name'));
+              echo json_encode(array('status' => 'error', 'message' => 'no driver_name'));
               exit();
             }
           
-            $sql = "INSERT INTO car_type (car_type_name) 
-                    VALUES (:car_type_name)";
+            $sql = "INSERT INTO car_driver (user_id, name) 
+                    VALUES (:user_id, :name)";
             $query = $conn->prepare($sql);
-            $query->bindParam(':car_type_name', $car_type->car_type_name, PDO::PARAM_STR);
+            $query->bindParam(':user_id', $driver->user_id, PDO::PARAM_INT);
+            $query->bindParam(':name', $driver->name, PDO::PARAM_STR);
             $query->execute();
           
             if ($query->rowCount() > 0) {
@@ -45,18 +45,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           
           
 
-        if($car_type->act == 'update'){
-          $id = $car_type->id;
-          $car_type_name = $car_type->car_type_name;
-          
-          $sql = "UPDATE car_type 
-                  SET car_type_name = :car_type_name            
+        if($driver->act == 'update'){
+          $id = $driver->id;
+          $user_id = $driver->user_id;
+          $name = $driver->name;
+          $sql = "UPDATE car_driver 
+                  SET 
+                    user_id = :user_id,                  
+                    name = :name                  
                   WHERE id = :id";   
-          
+
           $query = $conn->prepare($sql);
-          $query->bindParam(':car_type_name', $car_type_name, PDO::PARAM_STR);
+          $query->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+          $query->bindParam(':name', $name, PDO::PARAM_STR);
           $query->bindParam(':id', $id, PDO::PARAM_INT);
           $query->execute();    
+
           
           if ($query->rowCount() > 0) {
             http_response_code(200);
@@ -71,14 +75,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }  
               
          
-        if($car_type->act == 'delete'){
-            $id  = $car_type->id;
+        if($driver->act == 'delete'){
+            $id  = $driver->id;
 
-            // http_response_code(200);
-            // echo json_encode(array('status' => true, 'message' => 'ok', 'data' => $id));
-            // exit();
-
-            $sql = "DELETE FROM car_type WHERE id = :id";
+            $sql = "DELETE FROM car_driver WHERE id = :id";
             $query = $conn->prepare($sql);
             $query->bindParam(':id', $id, PDO::PARAM_INT);
             $query->execute();
@@ -96,13 +96,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         http_response_code(200);
-        echo json_encode(array('status' => false, 'message' => 'ไม่มีการเปลี่ยนแปลง'));
+        echo json_encode(array('status' => 'error', 'message' => 'ไม่มีการเปลี่ยนแปลง'));
         exit();  
         
         
     }catch(PDOException $e){
         http_response_code(200);
-        echo json_encode(array('status' => false, 'message' => 'เกิดข้อผิดพลาด..' . $e->getMessage()));
+        echo json_encode(array('status' => 'error', 'message' => 'เกิดข้อผิดพลาด..' . $e->getMessage()));
         exit();
     }
 }

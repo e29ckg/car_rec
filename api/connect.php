@@ -8,7 +8,7 @@ date_default_timezone_set("Asia/Bangkok");
 
 $servername = "localhost";
 $username = "root";
-$password = "";
+$password = "rgpk;N900";
 $dbname = "car_record";
 
 $dbname_main = "vengg";

@@ -109,101 +109,200 @@
 
         
 
-        <!-- ========================= ประเภทรถ start ========================= -->
-        <section class="client-logo-section pt-100">
-            <div class="container"   >
-                <div class="row">
-                    <div class="card mb-3" >
-                        <div class="row g-0">
-                          
-                          <div class="col-md-10">
-                            <div class="card-body">                            
-                                  
-                                  <table class="table table-striped table-sm">
-                                      <thead>
-                                        <tr>
-                                          <th scope="col">#</th>
-                                          <th scope="col">ชื่อประเภท</th>
-                                          <th scope="col text-end">
-                                              
-                                          </th>
-                                        </tr>
-                                      </thead>
-                                      <tbody>
-                                        <tr v-for="ct, index in car_types">
-                                          <th scope="row">{{index + 1}}</th>
-                                          <td>{{ct.car_type_name}}</td>
-                                          <td>
-                                              <button @click="car_type_update(ct.id)" class="btn btn-warning">แก้ไข</button>
-                                              <button @click="car_type_delete(ct.id)" class="btn btn-danger">ลบ</button>
-                                             
-                                          </td>
-                                        </tr>  
-                                        <!-- {{pj.c_users}}                         -->
-                                      </tbody>
-                                  </table>
-                            </div>
-                          </div>
-                        </div> 
+        <section class="client-logo-section pt-100 ">
+          <div class="container" >
+            <div class="row">
+              
+              <!-- ========================= ประเภทรถ start ========================= -->
+              <div class="card mb-3 col-md-4" >                          
+                <div class="card-header bg-transparent border-success">Header</div>
+                  <div class="card-body">                            
+                    <table class="table table-striped table-sm">
+                      <thead>
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">ชื่อประเภท</th>
+                          <th scope="col" class="text-end">
+                            <button type="button" class="btn btn-success" @click="car_type_add()">เพิ่มประเภทรถ</button>
+                          </th>                                
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="ct, index in car_types">
+                          <th scope="row">{{index + 1}}</th>
+                          <td>{{ct.car_type_name}}</td>
+                          <td>
+                              <button @click="car_type_update(index)" class="btn btn-warning">แก้ไข</button>
+                              <button @click="car_type_delete(index)" class="btn btn-danger">ลบ</button>                                    
+                          </td>
+                        </tr>  
+                      </tbody>
+                    </table>                            
+                  </div> 
+              </div>
+              <!-- Button trigger modal -->
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_car_type" ref="car_type_form" hidden>
+                car_type
+              </button>
+              <!-- Modal -->
+              <div class="modal fade" id="modal_car_type" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="staticBackdropLabel">car_type</h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="modal_car_type_close" ref="btn_car_type_close"></button>
                     </div>
-                </div>
-            </div>
-        </section>
-        <!-- ========================= client-logo-section end ========================= -->
-
-
-        <!-- ========================= client-logo-section start ========================= -->
-        <section class="client-logo-section pt-100">
-            <div class="container"  v-for="pj in car_recs" >
-                <div class="row">
-                    <div class="card mb-3" >
-                        <div class="row g-0">
-                          <div class="col-md-2 ">
-                            <img  v-if="pj.img" :src="'./img/' + pj.img" class="img-fluid rounded-start mt-2" alt="...">
-                            <img  v-else src="./img/none.png" class="img-fluid rounded-start mt-2" alt="...">
-                          </div>
-                          <div class="col-md-10">
-                            <div class="card-body">
-                              <h5 class="card-title">{{pj.name}}</h5>
-                              <p class="card-text" v-html="pj.detail"></p>
-                              <p class="card-text" v-if="pj.date_train">วันที่อบรม {{pj.date_train}}</p>
-                              <p class="card-text"><small class="text-muted">รวมระยะเวลาทั้งสิ้น {{pj.period}}</small></p>
-                              <div class="card-footer text-center mt-3">
-                                  
-                              </div>
-                              <div class="row g-0" v-if="pj.c_users">
-                                  <table class="table table-striped table-sm">
-                                      <thead>
-                                        <tr>
-                                          <th scope="col">#</th>
-                                          <th scope="col">Name</th>
-                                          <th scope="col text-end">
-                                              
-                                          </th>
-                                        </tr>
-                                      </thead>
-                                      <tbody>
-                                        <tr v-for="pju,index in pj.c_users">
-                                          <th scope="row">{{index + 1}}</th>
-                                          <td>{{pju.name}}</td>
-                                          <td>
-                                              <button @click="print(pju.id)" class="btn btn-warning">พิมพ์ ({{pju.template_name}})</button>
-                                             
-                                          </td>
-                                        </tr>  
-                                        <!-- {{pj.c_users}}                         -->
-                                      </tbody>
-                                  </table>
-                              </div>    
-                            </div>
-                          </div>
-                        </div> 
+                    <div class="modal-body">
+                      <!-- {{car_type}} -->
+                      <div class="mb-3">
+                        <label for="ex1" class="form-label">ชื่อประเภท</label>
+                        <input type="text" class="form-control" id="ex1" placeholder="ชื่อประเภท"  v-model="car_type.car_type_name">
+                      </div>                      
                     </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="modal_car_type_close">ปิด</button>
+                      <button type="submit" class="btn btn-primary" @click="car_type_save()" >บันทึก</button>
+                    </div>
+                  </div>
                 </div>
-            </div>
-        </section>
-        <!-- ========================= client-logo-section end ========================= -->
+              </div>
+              <!-- ========================= ประเภทรถ end ========================= -->
+              
+              
+              <!-- ========================= รถ start ========================= -->
+              <div class="card mb-3 col-md-4" >                          
+                <div class="card-header bg-transparent border-success">รถ</div>
+                  <div class="card-body">                            
+                    <table class="table table-striped table-sm">
+                      <thead>
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">ทะเบียน</th>
+                          <th scope="col">ประเภทรถ</th>
+                          <th scope="col" class="text-end">
+                            <button type="button" class="btn btn-success" @click="car_add()">เพิ่มรถ</button>
+                          </th>                                
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="c, index in cars">
+                          <th scope="row">{{index + 1}}</th>
+                          <td>{{c.vehicle_reg + ' ' + c.province}}</td>
+                          <td>
+                              <button @click="car_update(index)" class="btn btn-warning">แก้ไข</button>
+                              <button @click="car_delete(index)" class="btn btn-danger">ลบ</button>                                    
+                          </td>
+                        </tr>  
+                      </tbody>
+                    </table>                            
+                  </div> 
+              </div>
+              <!-- Button trigger modal -->
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_car" ref="car_form" hidden>
+                car
+              </button>
+              <!-- Modal -->
+              <div class="modal fade" id="modal_car" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="staticBackdropLabel">car</h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="modal_car_close" ref="btn_car_close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <!-- {{car}} -->
+                      <div class="mb-3">
+                        <label for="ex1" class="form-label">เลขทะเบียน</label>
+                        <input type="text" class="form-control" id="ex1" placeholder="เลขทะเบียน"  v-model="car.vehicle_reg">
+                      </div>                      
+                      <div class="mb-3">
+                        <label for="ex2" class="form-label">จังหวัด</label>
+                        <input type="text" class="form-control" id="ex2" placeholder="จังหวัด"  v-model="car.province">
+                      </div>                      
+                      <div class="mb-3">
+                        <label for="ex12" class="form-label">ประเภทรถ</label>
+                        <select class="form-select" aria-label="Default select example" v-model="car.car_type_id">
+                           <option v-for="ct in car_types" :value="ct.id">{{ct.car_type_name}}</option>
+                        </select>
+                      </div>                      
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="modal_car_close">ปิด</button>
+                      <button type="submit" class="btn btn-primary" @click="car_save()" >บันทึก</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- ========================= รถ end ========================= -->
+              
+              <!-- ========================= รถ start ========================= -->
+              <div class="card mb-3 col-md-4" >                          
+                <div class="card-header bg-transparent border-success">พนักงานขับรถ</div>
+                  <div class="card-body">                            
+                    <table class="table table-striped table-sm">
+                      <thead>
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">ชื่อพนักงานขับรถ</th>
+                          <th scope="col" class="text-end">
+                            <button type="button" class="btn btn-success" @click="driver_add()">เพิ่มพนักงานขับรถ</button>
+                          </th>                                
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="dv, index in drivers">
+                          <th scope="row">{{index + 1}}</th>
+                          <td>{{(dv.name)}}</td>
+                          <td>
+                              <button @click="driver_update(index)" class="btn btn-warning">แก้ไข</button>
+                              <button @click="driver_delete(index)" class="btn btn-danger">ลบ</button>                                    
+                          </td>
+                        </tr>  
+                      </tbody>
+                    </table>                            
+                  </div> 
+              </div>
+              <!-- Button trigger modal -->
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_driver" ref="driver_form" hidden>
+                driver
+              </button>
+              <!-- Modal -->
+              <div class="modal fade" id="modal_driver" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="staticBackdropLabel">driver</h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="modal_driver_close" ref="btn_driver_close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <!-- {{driver}} -->
+                                           
+                      <div class="mb-3">
+                        <label for="ex12" class="form-label">ชื่อพนักงานขับรถ</label>
+                        <select class="form-select" aria-label="Default select example" v-model="driver.user_id">
+                           <option v-for="us in users" :value="us.user_id">{{us.name}}</option>
+                        </select>
+                      </div>                      
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="modal_driver_close">ปิด</button>
+                      <button type="submit" class="btn btn-primary" @click="driver_save()" >บันทึก</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- ========================= รถ end ========================= -->
 
+
+
+            </div>
+          </div>
+        </section>
+        
+<!-- {{users}} -->
+
+
+       
 
 
         <!-- ========================= footer start ========================= -->
@@ -236,77 +335,9 @@
         <a href="#" class="scroll-top">
             <i class="lni lni-arrow-up"></i>
         </a>
-        <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_car_type" ref="car_type_form" >
-            car_type
-        </button>
-        <!-- Modal -->
-        <div class="modal fade" id="modal_car_type" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-          <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h1 class="modal-title fs-5" id="staticBackdropLabel">car_type</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="modal_car_type_close" ref="btn_car_type_close"></button>
-              </div>
-              <div class="modal-body">
-                {{car_type}}
-                <div class="mb-3">
-                  <label for="ex1" class="form-label">ชื่อประเภท</label>
-                  <input type="text" class="form-control" id="ex1" placeholder="ชื่อประเภท"  v-model="car_type.car_type_name">
-                </div>
-                
+        
 
-                <!-- {{car_rec}} -->
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="modal_car_type_close">ปิด</button>
-                <button type="submit" class="btn btn-primary" @click="car_type_save()" >บันทึก</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_car_rec" ref="car_form" >
-            car
-        </button>
-        <!-- Modal -->
-        <div class="modal fade" id="modal_car_rec" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-          <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="car_form_close" ref="btn_car_form_close"></button>
-              </div>
-              <div class="modal-body">
-                {{car}}
-                <div class="mb-3">
-                  <label for="ex1" class="form-label">เลขทะเบียน</label>
-                  <input type="text" class="form-control" id="ex1" placeholder="เลขทะเบียน"  v-model="car.vehicle_reg">
-                </div>
-                <div class="mb-3">
-                  <label for="ex2" class="form-label">จังหวัด</label>
-                  <input class="form-control" id="ex2" placeholder="จังหวัด" v-model="car.province">
-                </div>
-                
-                <div class="mb-3">
-                  <label for="ex11" class="form-label">ประเภทรถ</label>
-                   <select class="form-select" aria-label="Default select example" v-model="car.car_type_id">
-                    <option v-for="ct in car_types" :value="ct.id">{{ct.car_type_name}}</option>
-                  </select>
-                </div>
-                
-                
-
-                <!-- {{car_rec}} -->
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="modal_car_rec_close">ปิด</button>
-                <button type="submit" class="btn btn-primary" @click="car_rec_save()" >บันทึก</button>
-              </div>
-            </div>
-          </div>
-        </div>
+        
     </div>
 		<!-- ========================= JS here ========================= -->
 		<script src="assets/js/bootstrap.min.js"></script>
