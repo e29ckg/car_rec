@@ -213,7 +213,7 @@ Vue.createApp({
         .then(response => {
             url = response.data.url
             console.log(url)
-            // window.open(url,'_blank')
+            window.open(url,'_blank')
         })
         .catch(function (error) {
             console.log(error);
