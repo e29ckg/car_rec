@@ -3,6 +3,7 @@ Vue.createApp({
       return {
             q:'',
             datas: '',
+            car_recs: [],
             car_rec: {
                 'book_number' : '',
                 'book_year' : '',
@@ -12,7 +13,9 @@ Vue.createApp({
                 'why' : '',
                 'followers_num' : '',
                 'use_begin' : '',
+                'use_begin_t' : '',
                 'use_end' : '',
+                'use_end_t' : '',
                 'status' : '',
                 'comment' : '',
                 'own_created' : 'test',
@@ -23,6 +26,7 @@ Vue.createApp({
             user_reqs : [],
             cars : [],
             drivers : [],
+            users : [],
             
             isLoading : false,
         }
@@ -42,7 +46,7 @@ Vue.createApp({
             axios.post('./api/index/get_car_recs.php')
             .then(response => {
                 if (response.data.status) {
-                    this.datas = response.data.data
+                    this.car_recs = response.data.data
                     // console.log(response.data)
                 } 
             })
@@ -79,56 +83,11 @@ Vue.createApp({
                 this.isLoading = false;
             })
         }, 
-       
-        search(){
-                if(this.q.length > 1 ){
-                    this.isLoading = true
-                    axios.post('./api/index/get_car_recs.php',{q:this.q})
-                    .then(response => {
-                        if (response.data.status) {
-                            this.datas = response.data                        
-                            this.projects = response.data.projects                        
-                        } else{
-                            this.projects = [
-                                
-                            ]
-                        }
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                    })
-                    .finally(() => {
-                        this.isLoading = false;
-                    })
-                }else{
-                    this.get_car_recs()
-                }
-        },
-        car_rec_add(){
-            this.car_rec.act = 'insert'
-            this.get_cars()
-            this.get_drivers()
-            this.$refs.car_rec_form.click()  
-        },
-
-       print(id){
-        this.isLoading = true
-        axios.post('./api/cert/print.php',{id:id})    
+        get_users(){
+            this.isLoading = true;
+            axios.post('./api/index/get_users.php')
             .then(response => {
-                if (response.data.status) {
-                    axios.post('./service/mpdf/api/cert/index.php',{
-                        data        : response.data.resp,
-                        template    : response.data.template,
-                        text        : response.data.text[0],
-                    }) 
-                    .then(response => {
-                        url = response.data.url
-                        console.log(url)
-                        window.open(url,'_blank')
-                    })
-                }else{
-                  this.alert('warning',response.data.message,0)
-                } 
+                this.users = response.data.data
             })
             .catch(function (error) {
                 console.log(error);
@@ -136,39 +95,146 @@ Vue.createApp({
             .finally(() => {
                 this.isLoading = false;
             })
+        }, 
+       
+        // search(){
+        //         if(this.q.length > 1 ){
+        //             this.isLoading = true
+        //             axios.post('./api/index/get_car_recs.php',{q:this.q})
+        //             .then(response => {
+        //                 if (response.data.status) {
+        //                     this.datas = response.data                        
+        //                     this.projects = response.data.projects                        
+        //                 } else{
+        //                     this.projects = [
+                                
+        //                     ]
+        //                 }
+        //             })
+        //             .catch(function (error) {
+        //                 console.log(error);
+        //             })
+        //             .finally(() => {
+        //                 this.isLoading = false;
+        //             })
+        //         }else{
+        //             this.get_car_recs()
+        //         }
+        // },
+        car_rec_cls(){
+            this.car_rec = {'book_number' : '', 'book_year' : '', 'req_date' : '', 'user_req_id' : '', 'location_name' : '',
+                'why' : '', 'followers_num' : '', 'use_begin' : '', 'use_begin_t' : '', 'use_end' : '', 'use_end_t' : '',
+                'status' : '', 'comment' : '', 'own_created' : 'test', 'car_id' : '', 'driver_id' : '', 'act' : 'insert'}
+        },
+        car_rec_add(){
+            this.car_rec_cls()
+            this.car_rec.act = 'insert'
+            this.get_cars()
+            this.get_drivers()
+            this.get_users()
+            this.$refs.car_rec_form.click()  
+        },
+        car_rec_update(index){
+            this.car_rec = this.car_recs[index]
+            this.car_rec.act = 'update'
+            this.get_cars()
+            this.get_drivers()
+            this.get_users()
+            this.$refs.car_rec_form.click()  
+        },
+        car_rec_save(){
+            this.isLoading = true
+            axios.post('./api/index/car_rec_act.php',{car_rec:this.car_rec})
+            .then(response => {
+                const resp = response.data 
+                const icon = resp.status; // กำหนดไอคอนที่ต้องการแสดงใน alert
+                const message = resp.message; // กำหนดข้อความที่ต้องการแสดงใน alert
+                const timer = 2000; // กำหนดเวลาในการแสดง alert (0 = ไม่มีการปิดอัตโนมัติ)
+                this.alert(icon, message, timer);
+                if(resp.status == 'success'){
+                    this.$refs.btn_car_rec_close.click() 
+                    this.car_rec_cls()
+                    this.get_car_recs()
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+            .finally(() => {
+                this.isLoading = false;
+            })
+        
+        },
+        car_rec_delete(index){
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  this.isLoading = true;
+                  this.car_rec = this.car_recs[index]
+                  this.car_rec.act = 'delete' 
+                  const requestData = { car_rec: this.car_rec};
+                  axios
+                    .post('./api/index/car_rec_act.php', requestData)
+                    .then(response => {
+                      const resp = response.data 
+                      
+                      const icon = resp.status; // กำหนดไอคอนที่ต้องการแสดงใน alert
+                      const message = resp.message; // กำหนดข้อความที่ต้องการแสดงใน alert
+                      const timer = 2000; // กำหนดเวลาในการแสดง alert (0 = ไม่มีการปิดอัตโนมัติ)
+                      this.alert(icon, message, timer);                    
+                      if(resp.status == 'success'){
+      
+                          this.get_car_recs()
+                      }
+                    })
+                    .catch(error => {
+                      console.log(error);
+                    })
+                    .finally(() => {
+                      this.isLoading = false;
+                    });
+                }
+              })
+        },
+
+       print(index){
+        this.isLoading = true
+        
+        axios.post('./service/mpdf/api/car_rec/index.php',{
+            data : this.car_recs[index] 
+        }) 
+        .then(response => {
+            url = response.data.url
+            console.log(url)
+            // window.open(url,'_blank')
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+        .finally(() => {
+            this.isLoading = false;
+        })
   
       }, 
-      add_users(id){
-        axios.post('./api/cert/add_users.php',{project_id:id})    
-            .then(response => {
-                // this.alert(icon,message,timer=0)
-                this.get_projects()
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-      },
-      del_user(id){
-        axios.post('./api/cert/del_user.php',{id:id})    
-            .then(response => {
-                // this.alert(icon,message,timer=0)
-                this.get_projects()
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-      },
+      
 
 
      
-    //   alert(icon,message,timer=0){
-    //     swal.fire({
-    //       icon: icon,
-    //       title: message,
-    //       showConfirmButton: false,
-    //       timer: timer
-    //     });
-    //   },
+      alert(icon,message,timer=0){
+        swal.fire({
+          icon: icon,
+          title: message,
+        //   showConfirmButton: false,
+          timer: timer
+        });
+      },
     },
   
   }).mount('#index')

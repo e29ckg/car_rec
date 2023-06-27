@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
     http_response_code(200);
-    echo json_encode(array('status' => true, 'message' => 'สำเร็จ', 'data' => $datas));
+    echo json_encode(array('status' => true, 'message' => 'สำเร็จ', 'data' => $result));
     exit();
     }
     http_response_code(200);

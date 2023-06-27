@@ -25,11 +25,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               exit();
             }
           
-            $sql = "INSERT INTO car_driver (user_id, name) 
-                    VALUES (:user_id, :name)";
+            $sql = "INSERT INTO car_driver (user_id) 
+                    VALUES (:user_id)";
             $query = $conn->prepare($sql);
             $query->bindParam(':user_id', $driver->user_id, PDO::PARAM_INT);
-            $query->bindParam(':name', $driver->name, PDO::PARAM_STR);
+            // $query->bindParam(':name', $driver->name, PDO::PARAM_STR);
             $query->execute();
           
             if ($query->rowCount() > 0) {
@@ -48,16 +48,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if($driver->act == 'update'){
           $id = $driver->id;
           $user_id = $driver->user_id;
-          $name = $driver->name;
+          // $name = $driver->name;
           $sql = "UPDATE car_driver 
                   SET 
-                    user_id = :user_id,                  
-                    name = :name                  
+                    user_id = :user_id          
                   WHERE id = :id";   
 
           $query = $conn->prepare($sql);
           $query->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-          $query->bindParam(':name', $name, PDO::PARAM_STR);
+          // $query->bindParam(':name', $name, PDO::PARAM_STR);
           $query->bindParam(':id', $id, PDO::PARAM_INT);
           $query->execute();    
 

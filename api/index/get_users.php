@@ -12,25 +12,20 @@ $data = json_decode(file_get_contents("php://input"));
 // The request is using the POST method
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $datas = [];
-    $sql = "SELECT cd.*
-            FROM car_driver AS cd";
-    $query = $conn->prepare($sql);
+    $sql = "SELECT p.*
+            FROM profile AS p";
+    $query = $conn_main->prepare($sql);
     $query->execute();
     $result = $query->fetchAll(PDO::FETCH_OBJ);
 
     if($query->rowCount() > 0){                        //count($result)  for odbc
         foreach($result as $rs){
-            $sql = "SELECT p.*
-                    FROM profile AS p
-                    WHERE id=:id";
-            $query = $conn_main->prepare($sql);            
-            $query->bindParam(':id', $rs->user_id, PDO::PARAM_INT);
-            $query->execute();
-            $res = $query->fetch(PDO::FETCH_OBJ);
+            
             $datas[] = [
                 'id'=> $rs->id,
                 'user_id'=> $rs->user_id,
-                'name'=> $res->fname.$res->name.' '.$res->sname
+                'name'=> $rs->fname.$rs->name.' '.$rs->sname,
+                'dep'=> $rs->dep
             ];
         }
         http_response_code(200);

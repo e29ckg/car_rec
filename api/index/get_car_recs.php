@@ -28,25 +28,31 @@ try{
         
 
             if($query->rowCount() > 0){                        //count($result)  for odbc
-                // foreach($result as $rs){     
-    
-                    
-                //     if($query->rowCount() > 0){
-                //         array_push($datas,array(
-                //             'id'            => $rs->id,
-                //             'year'          => $rs->year,
-                //             'name'          => $rs->name,
-                //             'detail'        => $rs->detail,
-                //             'img'           => $rs->img,
-                //             'date_train'    => $rs->date_train,
-                //             'period'        => $rs->period,
-                //             'c_users'       => $res_pr_u
-                //         ));
-                //     }
-                // }
+                foreach($result as $rs){     
+                    $use_begin = date("Y-m-d H:i:s", strtotime($rs->use_begin));
+                    $use_begin_t = date("Y-m-d H:i:s", strtotime($rs->use_begin));
+                    $use_end = date("Y-m-d", strtotime($rs->use_end));
+                    $use_end_t = date("H:i:s", strtotime($rs->use_end));
+                    array_push($datas,array(
+                            'id' => $rs->id,
+                            'book_number' => $rs->book_number,
+                            'book_year' => $rs->book_year,
+                            'req_date' => $rs->req_date,
+                            'location_name'     => $rs->location_name,
+                            'followers_num'     => $rs->followers_num,
+                            'use_begin'     => $rs->use_begin,
+                            'use_begin_t'     => $rs->use_begin_t,
+                            'use_end'     => $use_end,
+                            'use_end_t'     =>$use_end_t,
+                            'user_req_id'        => $rs->user_req_id,
+                            'car_id'        => $rs->car_id,
+                            'driver_id'     => $rs->driver_id,
+                        ));
+                    }
+               
         
                 http_response_code(200);
-                echo json_encode(array('status' => true, 'message' => 'สำเร็จ', 'data' => $result));
+                echo json_encode(array('status' => true, 'message' => 'สำเร็จ', 'data' => $datas));
                 exit();
             }
 
@@ -56,8 +62,9 @@ try{
 
         }else{                      
 
-            $sql = "SELECT cr.*
+            $sql = "SELECT *
                     FROM car_rec AS cr 
+                    ORDER BY created_at DESC
                     LIMIT 20";
             $query = $conn->prepare($sql);
             $query->execute();
@@ -65,7 +72,37 @@ try{
 
             if($query->rowCount() > 0){                        //count($result)  for odbc
                 
-    
+                foreach($result as $rs){     
+                    $use_begin = date("Y-m-d", strtotime($rs->use_begin));
+                    $use_begin_t = date("H:i", strtotime($rs->use_begin));
+                    $use_end = date("Y-m-d", strtotime($rs->use_end));
+                    $use_end_t = date("H:i", strtotime($rs->use_end));
+                    array_push($datas,array(
+                            'id' => $rs->id,
+                            'book_number'   => $rs->book_number,
+                            'book_year'     => $rs->book_year,
+                            'req_date'      => $rs->req_date,
+                            'user_req_id'   => $rs->user_req_id,
+                            'user_req_name'   => $rs->user_req_name,
+                            'user_req_dep'   => $rs->user_req_dep,
+                            'location_name' => $rs->location_name,
+                            'why'           => $rs->why,
+                            'followers_num' => $rs->followers_num,
+                            'use_begin'     => $use_begin,
+                            'use_begin_t'   => $use_begin_t,
+                            'use_end'       => $use_end,
+                            'use_end_t'     => $use_end_t,
+                            'status'        => $rs->status,
+                            'comment'       => $rs->comment,
+                            'car_id'        => $rs->car_id,
+                            'car_name'        => $rs->car_name,
+                            'driver_id'     => $rs->driver_id,
+                            'driver_name'     => $rs->driver_name,
+                            'driver_dep'     => $rs->driver_dep,
+                        ));
+                    }
+               
+        
                 http_response_code(200);
                 echo json_encode(array('status' => true, 'message' => 'สำเร็จ', 'data' => $datas));
                 exit();

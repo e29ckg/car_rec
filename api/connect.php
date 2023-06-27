@@ -8,7 +8,7 @@ date_default_timezone_set("Asia/Bangkok");
 
 $servername = "localhost";
 $username = "root";
-$password = "rgpk;N900";
+$password = "";
 $dbname = "car_record";
 
 $dbname_main = "vengg";
@@ -41,7 +41,7 @@ function customError($errno, $errstr) {
 }
 
 //set error handler
-set_error_handler("customError");
+// set_error_handler("customError");
 
 //trigger error
 // echo($test);

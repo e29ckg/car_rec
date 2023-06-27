@@ -16,22 +16,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $datas = array();  
     $car = $data->car;  
     
-     
-    
     try{
         if ($car->act == 'insert') {
-            if ($car->vehicle_reg == '') {
+            if ($car->name == '') {
               http_response_code(200);
               echo json_encode(array('status' => false, 'message' => 'no car_name'));
               exit();
             }
           
-            $sql = "INSERT INTO car (vehicle_reg, province, car_type_id) 
-                    VALUES (:vehicle_reg, :province, :car_type_id)";
+            $sql = "INSERT INTO car (car.name) 
+                    VALUES (:name)";
             $query = $conn->prepare($sql);
-            $query->bindParam(':vehicle_reg', $car->vehicle_reg, PDO::PARAM_STR);
-            $query->bindParam(':province', $car->province, PDO::PARAM_STR);
-            $query->bindParam(':car_type_id', $car->car_type_id, PDO::PARAM_INT);
+            $query->bindParam(':name', $car->name, PDO::PARAM_STR);
             $query->execute();
           
             if ($query->rowCount() > 0) {
@@ -49,21 +45,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if($car->act == 'update'){
           $id = $car->id;
-          $vehicle_reg = $car->vehicle_reg;
-          $province = $car->province;
-          $car_type_id = $car->car_type_id;
+          $name = $car->name;
 
           $sql = "UPDATE car 
                   SET 
-                    vehicle_reg = :vehicle_reg,
-                    province = :province,
-                    car_type_id = :car_type_id
+                    car.name = :name
                   WHERE id = :id";   
 
           $query = $conn->prepare($sql);
-          $query->bindParam(':vehicle_reg', $vehicle_reg, PDO::PARAM_STR);
-          $query->bindParam(':province', $province, PDO::PARAM_STR);
-          $query->bindParam(':car_type_id', $car_type_id, PDO::PARAM_INT);
+          $query->bindParam(':name', $name, PDO::PARAM_STR);
           $query->bindParam(':id', $id, PDO::PARAM_INT);
           $query->execute();    
 
