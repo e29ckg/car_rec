@@ -27,11 +27,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $query->bindParam(':id', $rs->user_id, PDO::PARAM_INT);
             $query->execute();
             $res = $query->fetch(PDO::FETCH_OBJ);
-            $datas[] = [
-                'id'=> $rs->id,
-                'user_id'=> $rs->user_id,
-                'name'=> $res->fname.$res->name.' '.$res->sname
-            ];
+
+            if($query->rowCount()){
+                $datas[] = [
+                    'id'=> $rs->id,
+                    'user_id'=> $rs->user_id,
+                    'name'=> $res->fname.$res->name.' '.$res->sname
+                ];
+            }
+
         }
         http_response_code(200);
         echo json_encode(array('status' => true, 'message' => 'สำเร็จ', 'data' => $datas));

@@ -13,7 +13,9 @@ $data = json_decode(file_get_contents("php://input"));
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $datas = [];
     $sql = "SELECT p.*
-            FROM profile AS p";
+            FROM profile AS p 
+            WHERE p.status=10
+            ORDER BY st ASC";
     $query = $conn_main->prepare($sql);
     $query->execute();
     $result = $query->fetchAll(PDO::FETCH_OBJ);
@@ -25,7 +27,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'id'=> $rs->id,
                 'user_id'=> $rs->user_id,
                 'name'=> $rs->fname.$rs->name.' '.$rs->sname,
-                'dep'=> $rs->dep
+                'dep'=> $rs->dep,
+                'workgroup'=> $rs->workgroup,
             ];
         }
         http_response_code(200);

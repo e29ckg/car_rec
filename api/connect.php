@@ -8,10 +8,10 @@ date_default_timezone_set("Asia/Bangkok");
 
 $servername = "localhost";
 $username = "root";
-$password = "rgpk;N900";
+$password = "";
 $dbname = "car_record";
 
-$dbname_main = "vengg";
+$dbname_main = "main";
 
 /** เชื่อมต่อฐานข้อมูลด้วย PHP PDO */
 try {
@@ -41,7 +41,7 @@ function customError($errno, $errstr) {
 }
 
 //set error handler
-// set_error_handler("customError");
+set_error_handler("customError");
 
 //trigger error
 // echo($test);

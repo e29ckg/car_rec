@@ -17,9 +17,9 @@ $datas = array();
 try{
     if(isset($data->q)){
         $q = $data->q;
-        $sql = "SELECT cr.*
+        $sql = "SELECT *
                 FROM car_rec AS cr 
-                WHERE cr.book_number LIKE :q
+                ORDER BY created_at DESC
                 LIMIT 20";
         $query = $conn->prepare($sql);
         $query->bindValue(':q', "%$q%", PDO::PARAM_STR);
@@ -34,19 +34,28 @@ try{
                     $use_end = date("Y-m-d", strtotime($rs->use_end));
                     $use_end_t = date("H:i:s", strtotime($rs->use_end));
                     array_push($datas,array(
-                            'id' => $rs->id,
-                            'book_number' => $rs->book_number,
-                            'book_year' => $rs->book_year,
-                            'req_date' => $rs->req_date,
-                            'location_name'     => $rs->location_name,
-                            'followers_num'     => $rs->followers_num,
-                            'use_begin'     => $rs->use_begin,
-                            'use_begin_t'     => $rs->use_begin_t,
-                            'use_end'     => $use_end,
-                            'use_end_t'     =>$use_end_t,
-                            'user_req_id'        => $rs->user_req_id,
-                            'car_id'        => $rs->car_id,
-                            'driver_id'     => $rs->driver_id,
+                        'id' => $rs->id,
+                        'book_number'   => $rs->book_number,
+                        'book_year'     => $rs->book_year,
+                        'req_date'      => $rs->req_date,
+                        'user_req_id'   => $rs->user_req_id,
+                        'user_req_name'   => $rs->user_req_name,
+                        'user_req_dep'   => $rs->user_req_dep,
+                        'user_req_workgroup'   => $rs->user_req_workgroup,
+                        'location_name' => $rs->location_name,
+                        'why'           => $rs->why,
+                        'followers_num' => $rs->followers_num,
+                        'use_begin'     => $use_begin,
+                        'use_begin_t'   => $use_begin_t,
+                        'use_end'       => $use_end,
+                        'use_end_t'     => $use_end_t,
+                        'status'        => $rs->status,
+                        'comment'       => $rs->comment,
+                        'car_id'        => $rs->car_id,
+                        'car_name'        => $rs->car_name,
+                        'driver_id'     => $rs->driver_id,
+                        'driver_name'     => $rs->driver_name,
+                        'driver_dep'     => $rs->driver_dep,
                         ));
                     }
                
@@ -65,7 +74,7 @@ try{
             $sql = "SELECT *
                     FROM car_rec AS cr 
                     ORDER BY created_at DESC
-                    LIMIT 20";
+                    LIMIT 50";
             $query = $conn->prepare($sql);
             $query->execute();
             $result = $query->fetchAll(PDO::FETCH_OBJ);
@@ -85,6 +94,7 @@ try{
                             'user_req_id'   => $rs->user_req_id,
                             'user_req_name'   => $rs->user_req_name,
                             'user_req_dep'   => $rs->user_req_dep,
+                            'user_req_workgroup'   => $rs->user_req_workgroup,
                             'location_name' => $rs->location_name,
                             'why'           => $rs->why,
                             'followers_num' => $rs->followers_num,

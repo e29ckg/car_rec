@@ -27,12 +27,15 @@ Vue.createApp({
             cars : [],
             drivers : [],
             users : [],
+            boss : [],
             
             isLoading : false,
         }
     },
     mounted(){
         this.get_car_recs()
+        this.get_boss()
+        this.get_cars()
     },
     watch: {
         q(){
@@ -41,14 +44,27 @@ Vue.createApp({
       },
     
     methods: {
+        get_boss(){
+            this.isLoading = true;
+            axios.post('http://10.37.64.1/api/car_rec/get_boss.php')
+            .then(response => {
+                if (response.data.status) {
+                    this.boss = response.data.data
+                    // console.log(response.data)
+                } 
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+            .finally(() => {
+                this.isLoading = false;
+            })
+        }, 
         get_car_recs(){
             this.isLoading = true;
             axios.post('./api/index/get_car_recs.php')
             .then(response => {
-                if (response.data.status) {
-                    this.car_recs = response.data.data
-                    // console.log(response.data)
-                } 
+                this.car_recs = response.data.data
             })
             .catch(function (error) {
                 console.log(error);
@@ -149,7 +165,7 @@ Vue.createApp({
                 const resp = response.data 
                 const icon = resp.status; // กำหนดไอคอนที่ต้องการแสดงใน alert
                 const message = resp.message; // กำหนดข้อความที่ต้องการแสดงใน alert
-                const timer = 2000; // กำหนดเวลาในการแสดง alert (0 = ไม่มีการปิดอัตโนมัติ)
+                const timer = 1500; // กำหนดเวลาในการแสดง alert (0 = ไม่มีการปิดอัตโนมัติ)
                 this.alert(icon, message, timer);
                 if(resp.status == 'success'){
                     this.$refs.btn_car_rec_close.click() 
@@ -208,7 +224,9 @@ Vue.createApp({
         this.isLoading = true
         
         axios.post('./service/mpdf/api/car_rec/index.php',{
-            data : this.car_recs[index] 
+            data : this.car_recs[index],
+            boss : this.boss[0],
+            cars : this.cars,
         }) 
         .then(response => {
             url = response.data.url

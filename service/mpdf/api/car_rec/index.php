@@ -9,21 +9,29 @@ require_once '../../vendor/autoload.php';
 $data = json_decode(file_get_contents("php://input"));
 
 
-$files = glob('../../output/preview/*'); 
+// $files = glob('../../output/preview/*'); 
 
-// Deleting all the files in the list
-foreach($files as $file) {   
-    if(is_file($file))     
-    unlink($file); 
-}
+// // Deleting all the files in the list
+// foreach($files as $file) {   
+//     if(is_file($file))     
+//     unlink($file); 
+// }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $boss = $data->boss;
+    $cars = $data->cars;
     $data = $data->data;
 
-    $po_name = 'นายพเยาว์ สนกำำ';
-    $po_dep1 = 'หหหหหหหหห';
-    $po_dep2 = 'ฟฟฟฟฟฟฟฟ';
-    $po_dep3 = 'ดดดดดดดดดดดดดดดดดดดดดดดดดดด';
+    $po_name = 'นางสาววนิดา พิพัฒน์นภาพร';
+    $po_dep1 = 'ผู้อำนวยการสำนักงานประจำศาลเยาวชนและครอบครัวจังหวัดประจวบคีรีขันธ์';
+    $po_dep2 = '';
+    $po_dep3 = '';
+    if($boss){
+        $po_name = $boss->name;
+        $po_dep1 = $boss->dep1;
+        $po_dep2 = $boss->dep2;
+        $po_dep3 = $boss->dep3;  
+    }
     
     
     $tm = './car_rec_tm.pdf';
@@ -57,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             //'I' => 'THSarabunNew Italic.ttf',
             //'B' => 'THSarabunNew Bold.ttf',
             'useOTL' => 0xFF,
-			// 'useKashida' => 75
+			'useKashida' => 75
         ],
         'prompt' => [
             'R' => 'Prompt.ttf',
@@ -85,81 +93,113 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $mpdf->SetCreator('pkkjc.coj');
     $mpdf->SetKeywords('pkkjc');
     
-    $mpdf->AddPage();
-    
+    $mpdf->AddPage();    
     
     
     // $pagecount = $mpdf->setSourceFile('tm.pdf');
-    $pagecount = $mpdf->setSourceFile($tm);
     // $pagecount = $mpdf->setSourceFile($tm);
+    $pagecount = $mpdf->setSourceFile($tm);
     $tplId = $mpdf->importPage($pagecount);
     
     $actualsize = $mpdf->useTemplate($tplId);
 
-    
-    $data_text = '<div style="text-align:'.$name_text_align.';">'.$data->book_number.'</div>';
-    $mpdf->WriteFixedPosHTML($data_text, 42, 47, 15, 15, 'auto');    
-    $data_text = '<div style="text-align:'.$name_text_align.'; border:1pt solid; ">'.$data->book_year.'</div>';
-    $mpdf->WriteFixedPosHTML($data_text, 60, 47, 15, 20, 'auto');
+    if($data->book_number != 0){
+
+        $data_text = '<div style="text-align:'.$name_text_align.';">'.$data->book_number.'</div>';
+        $mpdf->WriteFixedPosHTML($data_text, 42, 46, 15, 15, 'auto');    
+        $data_text = '<div style="text-align:'.$name_text_align.'; ">'.$data->book_year.'</div>';
+        $mpdf->WriteFixedPosHTML($data_text, 60, 46, 15, 20, 'auto');
+        // $data_text = '<div style="text-align:'.$name_text_align.';">'.$data->book_number.'</div>';
+        // $mpdf->WriteFixedPosHTML($data_text, 42, 46, 15, 15, 'auto');    
+        // $data_text = '<div style="text-align:'.$name_text_align.'; ">'.$data->book_year.'</div>';
+        // $mpdf->WriteFixedPosHTML($data_text, 60, 46, 15, 20, 'auto');
+    }
 
 
     $d = date("d",strtotime($data->req_date));
     $m = DateThai_M($data->req_date);
     $y = date("Y",strtotime($data->req_date))+543;
-    $data_text = '<div style="text-align:'.$name_text_align.'; border:1pt solid; ">'.$d.'</div>';
-    $mpdf->WriteFixedPosHTML($data_text, 137, 63, 10, 20, 'auto');
-    $data_text = '<div style="text-align:'.$name_text_align.'; border:1pt solid; ">'.$m.'</div>';
-    $mpdf->WriteFixedPosHTML($data_text, 152, 63, 19, 20, 'auto');
-    $data_text = '<div style="text-align:'.$name_text_align.'; border:1pt solid; ">'.$y.'</div>';
-    $mpdf->WriteFixedPosHTML($data_text, 176, 63, 15, 20, 'auto');
+    $data_text = '<div style="text-align:'.$name_text_align.'; ">'.$d.'</div>';
+    $mpdf->WriteFixedPosHTML($data_text, 137, 64, 10, 20, 'auto');
+    $data_text = '<div style="text-align:'.$name_text_align.'; ">'.$m.'</div>';
+    $mpdf->WriteFixedPosHTML($data_text, 152, 64, 19, 20, 'auto');
+    $data_text = '<div style="text-align:'.$name_text_align.'; ">'.$y.'</div>';
+    $mpdf->WriteFixedPosHTML($data_text, 176, 64, 15, 20, 'auto');
     
-    $data_text = '<div style="text-align:'.$name_text_align.'; border:1pt solid; ">'.$data->user_req_name.'</div>';
+    $data_text = '<div style="text-align:'.$name_text_align.'; ">'.$data->user_req_name.'</div>';
     $mpdf->WriteFixedPosHTML($data_text, 65, 80, 55, 20, 'auto');
-    $data_text = '<div style="text-align:'.$name_text_align.'; border:1pt solid; ">'.$data->user_req_dep.'</div>';
+    $data_text = '<div style="text-align:'.$name_text_align.'; ">'.$data->user_req_dep.'</div>';
     $mpdf->WriteFixedPosHTML($data_text, 135, 80, 55, 20, 'auto');
-    $data_text = '<div style="text-align:'.$name_text_align.'; border:1pt solid; ">'.$data->user_req_dep.'</div>';
+    $data_text = '<div style="text-align:'.$name_text_align.'; ">'.$data->user_req_workgroup.'</div>';
     $mpdf->WriteFixedPosHTML($data_text, 49, 87, 54, 20, 'auto');
     
-    $data_text = '<div style="text-align:'.$name_text_align.'; border:1pt solid; ">'.$data->location_name.' เพื่อ '.$data->why.'</div>';
-    $mpdf->WriteFixedPosHTML($data_text, 85, 94, 75, 20, 'auto');
-    $data_text = '<div style="text-align:'.$name_text_align.'; border:1pt solid; ">'.$data->followers_num.'</div>';
-    $mpdf->WriteFixedPosHTML($data_text, 176, 94, 10, 20, 'auto');
+    $data_text = '<div style="text-align:'.$name_text_align.'; ">'.$data->location_name.' เพื่อ'.$data->why.'</div>';
+    $mpdf->WriteFixedPosHTML($data_text, 85, 93, 75, 20, 'auto');
+    $data_text = '<div style="text-align:'.$name_text_align.'; ">'.$data->followers_num.'</div>';
+    $mpdf->WriteFixedPosHTML($data_text, 176, 93, 10, 20, 'auto');
     
-    $data_text = '<div style="text-align:'.$name_text_align.'; border:1pt solid; ">'.$data->use_begin.' '.$data->use_begin_t.'</div>';
+    $data_text = '<div style="text-align:left; ">'.DateThai_full($data->use_begin).' '.DateThai_ft($data->use_begin_t).'น</div>';
     $mpdf->WriteFixedPosHTML($data_text, 40, 100, 60, 20, 'auto');
-    $data_text = '<div style="text-align:'.$name_text_align.'; border:1pt solid; ">'.$data->use_end.''. $data->use_end_t.'</div>';
-    $mpdf->WriteFixedPosHTML($data_text, 120, 100, 60, 20, 'auto');
+    $data_text = '<div style="text-align:left; ">'.DateThai_full($data->use_end).' '.DateThai_ft($data->use_end_t).'น</div>';
+    $mpdf->WriteFixedPosHTML($data_text, 100, 100, 60, 20, 'auto');
     
-    $data_text = '<div style="text-align:'.$name_text_align.'; border:1pt solid; ">( '.$data->user_req_name.' )</div>';
+    $data_text = '<div style="text-align:'.$name_text_align.'; ">( '.$data->user_req_name.' )</div>';
     $mpdf->WriteFixedPosHTML($data_text, 115, 118, 50, 20, 'auto');
-    $data_text = '<div style="text-align:'.$name_text_align.'; border:1pt solid; ">'.$data->user_req_dep.'</div>';
+    $data_text = '<div style="text-align:'.$name_text_align.'; ">'.$data->user_req_dep.'</div>';
     $mpdf->WriteFixedPosHTML($data_text, 115, 123, 50, 20, 'auto');
-    $data_text = '<div style="text-align:'.$name_text_align.'; border:1pt solid; ">'.DateThai_full($data->req_date).'</div>';
+    $data_text = '<div style="text-align:'.$name_text_align.'; ">'.DateThai_full($data->req_date).'</div>';
     $mpdf->WriteFixedPosHTML($data_text, 115, 128, 50, 20, 'auto');
+
+    /**เลือกรถ */
+    $y=137;
+    foreach($cars as $car){
+        $data_text = '<div style="text-align:left; ">';
+        $car->id == $data->car_id ?  $data_text .= '[ &#8730; ] ' : $data_text .= '[ &nbsp;&nbsp; ] ';    
+        $data_text .= $car->name;
+        $data_text .= '</div>';
+        $mpdf->WriteFixedPosHTML($data_text, 100, $y, 100, 20, 'auto');
+        $y+=5; 
+    }
     
-    $data_text = '<div style="text-align:'.$name_text_align.'; border:1pt solid; ">'.$data->driver_name.'</div>';
-    $mpdf->WriteFixedPosHTML($data_text, 87, 160, 65, 20, 'auto');
+    $data_text = '<div style="text-align:'.$name_text_align.'; ">'.$data->driver_name.'</div>';
+    $mpdf->WriteFixedPosHTML($data_text, 87, 158, 65, 20, 'auto');
     
-    $data_text = '<div style="text-align:'.$name_text_align.'; border:1pt solid; ">'.$po_name.'</div>';
-    $mpdf->WriteFixedPosHTML($data_text, 100, 190, 70, 20, 'auto');
-    $data_text = '<div style="text-align:'.$name_text_align.'; border:1pt solid; ">'.$po_dep1.'</div>';
-    $mpdf->WriteFixedPosHTML($data_text, 100, 195, 70, 20, 'auto');
-    $data_text = '<div style="text-align:'.$name_text_align.'; border:1pt solid; ">'.$po_dep2.'</div>';
-    $mpdf->WriteFixedPosHTML($data_text, 100, 200, 70, 20, 'auto');
-    $data_text = '<div style="text-align:'.$name_text_align.'; border:1pt solid; ">'.$po_dep3.'</div>';
-    $mpdf->WriteFixedPosHTML($data_text, 100, 205, 70, 20, 'auto');
-    $data_text = '<div style="text-align:'.$name_text_align.'; border:1pt solid; ">'.DateThai_full($data->req_date).'</div>';
-    $mpdf->WriteFixedPosHTML($data_text, 100, 205, 70, 20, 'auto');
+    
+    $data_text = '<div style="text-align:'.$name_text_align.'; ">('.$po_name.')</div>';
+    $mpdf->WriteFixedPosHTML($data_text, 75, 189, 120, 20, 'auto');
+    $data_text = '<div style="text-align:'.$name_text_align.'; ">'.$po_dep1.'</div>';
+    $mpdf->WriteFixedPosHTML($data_text, 75, 194, 120, 20, 'auto');
+    $data_text = '<div style="text-align:'.$name_text_align.'; ">'.$po_dep2.'</div>';
+    $mpdf->WriteFixedPosHTML($data_text, 100, 199, 70, 20, 'auto');
+
+    if($po_dep3 == ''){
+
+        $data_text = '<div style="text-align:'.$name_text_align.'; ">'.DateThai_full($data->req_date).'</div>';
+        $mpdf->WriteFixedPosHTML($data_text, 75, 204, 120, 20, 'auto');
+    }else{
+
+        $data_text = '<div style="text-align:'.$name_text_align.'; ">'.$po_dep3.'</div>';
+        $mpdf->WriteFixedPosHTML($data_text, 100, 204, 120, 20, 'auto');
+        $data_text = '<div style="text-align:'.$name_text_align.'; ">'.DateThai_full($data->req_date).'</div>';
+        $mpdf->WriteFixedPosHTML($data_text, 75, 209, 120, 20, 'auto');
+    }
 
 
-    $data_text = '<div style="text-align:'.$name_text_align.'; border:1pt solid; ">( '.$data->user_req_name.' )</div>';
-    $mpdf->WriteFixedPosHTML($data_text, 30, 252, 48, 20, 'auto');
-    $data_text = '<div style="text-align:'.$name_text_align.'; border:1pt solid; ">( '.$data->driver_name.' )</div>';
-    $mpdf->WriteFixedPosHTML($data_text, 120, 252, 48, 20, 'auto');
-    $data_text = '<div style="text-align:'.$name_text_align.'; border:1pt solid; ">'.DateThai_full($data->req_date).'</div>';
-    $mpdf->WriteFixedPosHTML($data_text, 120, 257, 48, 20, 'auto');
-    $data_text = '<div style="text-align:'.$name_text_align.'; border:1pt solid; ">'.DateThai_full($data->req_date).'</div>';
-    $mpdf->WriteFixedPosHTML($data_text, 30, 257, 48, 20, 'auto');
+    $data_text = '<div style="text-align:'.$name_text_align.'; ">( '.$data->user_req_name.' )</div>';
+    $mpdf->WriteFixedPosHTML($data_text, 30, 250, 48, 20, 'auto');
+    $data_text = '<div style="text-align:'.$name_text_align.'; ">( '.$data->driver_name.' )</div>';
+    $mpdf->WriteFixedPosHTML($data_text, 120, 250, 48, 20, 'auto');
+    $data_text = '<div style="text-align:'.$name_text_align.'; ">'.DateThai_full($data->req_date).'</div>';
+    $mpdf->WriteFixedPosHTML($data_text, 120, 255, 48, 20, 'auto');
+    $data_text = '<div style="text-align:'.$name_text_align.'; ">'.DateThai_full($data->req_date).'</div>';
+    $mpdf->WriteFixedPosHTML($data_text, 30, 255, 48, 20, 'auto');
+
+
+
+
+
+
+
       
     $mpdf->Output($output);
     
@@ -167,7 +207,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $link_url = './service/mpdf/api/car_rec/'.$name_file;
     
     http_response_code(200);
-    echo json_encode(array('status' => true, 'massege' => 'สำเร็จ', 'url' => $link_url,'data' => $data));
+    echo json_encode(array(
+        'status' => true, 
+        'massege' => 'สำเร็จ', 
+        'url' => $link_url,
+        'data' => $data,
+        'cars' => $cars,
+    ));
     exit;
 
 }
@@ -187,6 +233,22 @@ function DateThai_full($strDate)
                         "สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม");
     $strMonthThai=$strMonthCut[$strMonth];
     return "$strDay $strMonthThai $strYear";
+}
+function DateThai_ft($strDate)
+{
+    if($strDate == ''){
+        return "-";
+    }
+    $strYear = date("Y",strtotime($strDate))+543;
+    $strMonth= date("n",strtotime($strDate));
+    $strDay= date("j",strtotime($strDate));
+    $strHour= date("H",strtotime($strDate));
+    $strMinute= date("i",strtotime($strDate));
+    $strSeconds= date("s",strtotime($strDate));
+    $strMonthCut = Array("","มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม",
+                        "สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม");
+    $strMonthThai=$strMonthCut[$strMonth];
+    return "เวลา $strHour:$strMinute ";
 }
 
 function DateThai_M($strDate)

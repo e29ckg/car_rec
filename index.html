@@ -84,11 +84,7 @@
                                     <li class="nav-item">
                                         <a href="admin.html" class="page-scroll" href="./admin.html">FOR ADMIN</a>
                                     </li>
-                                    <li class="nav-item">
-                                        <!-- <a class="page-scroll" href="#">เพิ่มโครงการ</a> -->
-                                        <a href="#" class="page-scroll bg-success text-white" @click="car_rec_add()">เพิ่มคำขอใช้รถ</a>
-                                    </li>
-                                     
+                                                                       
                                 </ul>
                                 <form action="#" class="search-form">
                                     <input type="text" placeholder="Search" v-model="q">
@@ -114,14 +110,14 @@
                           
                           <div class="col-md-12">
                             <div class="card-body">
-                              <h5 class="card-title">22</h5>
+                              <h5 class="card-title">ผู้อำนวยการ : {{boss[0].name}}</h5>
                               
                               <div class="row g-0" >
                                   <table class="table table-striped table-sm">
                                       <thead>
                                         <tr>
                                           <th scope="col">#</th>
-                                          <th scope="col">Name</th>
+                                          <th scope="col" class="text-center">รายการ</th>
                                           <th scope="col" class="text-end">
                                             <a href="#" class="btn btn-success " @click="car_rec_add()">เพิ่มคำขอใช้รถ</a>
                                    
@@ -132,18 +128,14 @@
                                         <tr v-for="cr,index in car_recs">
                                           <th scope="row">{{index + 1}}</th>
                                           <td>
-                                            {{cr.book_number}}
-                                            {{cr.book_year}}
-                                            {{cr.req_date}}
-                                            {{cr.user_req_name}}
-                                            {{cr.user_req_dep}}
-                                            {{cr.use_begin}}
-                                            {{cr.use_end}}
-                                            {{cr.location_name}}
-                                            {{cr.follows_num}}
-                                            {{cr.why}}
-                                            {{cr.car_name}}
-                                            {{cr.driver_name}}
+                                            เลขคำขอ {{cr.book_number}}/{{cr.book_year}}
+                                            <br>ผู้ขอใช้รถ : {{cr.user_req_name}}
+                                            <br>ไปที่ : {{cr.location_name}} เพื่อ{{cr.why}}
+                                            <br>เริ่ม {{cr.use_begin}} ถึง {{cr.use_end}}
+                                            <br>ผู้ติดตาม : {{cr.follows_num}}
+                                            <br>รถ : {{cr.car_name}}
+                                            <br>พนักงานขับรถ : {{cr.driver_name}}
+                                            <br>วันที่ขอ : {{cr.req_date}}
                                           </td>
                                           <td class="text-end">
                                               <button @click="car_rec_update(index)" class="btn btn-warning me-2">แก้ไข</button>
@@ -197,8 +189,8 @@
                             </div>
                             <div class="row">
                               <div class="mb-3 col-4">
-                                <label for="ex5" class="form-label">สถานที่</label>
-                                <input type="text" class="form-control" id="ex5" placeholder="สถานที่" v-model="car_rec.location_name">
+                                <label for="ex5" class="form-label">สถานที่ไป</label>
+                                <input type="text" class="form-control" id="ex5" placeholder="สถานที่ไป" v-model="car_rec.location_name">
                               </div>
                               <div class="mb-3 col-4">
                                 <label for="ex6" class="form-label">ไปเพื่อ</label>

@@ -32,6 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($query->rowCount() > 0) {
                 $user_req_name = $res_user->fname.$res_user->name. ' '.$res_user->sname;
                 $user_req_dep = $res_user->dep;
+                $user_req_workgroup = $res_user->workgroup;
             }
 
             $sql = "SELECT * FROM profile WHERE id=:user_id";
@@ -67,6 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     user_req_id,
                                     user_req_name,
                                     user_req_dep,
+                                    user_req_workgroup,
                                     location_name,
                                     why, 
                                     followers_num,
@@ -89,6 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     :user_req_id,
                                     :user_req_name,
                                     :user_req_dep,
+                                    :user_req_workgroup,
                                     :location_name,
                                     :why, 
                                     :followers_num,
@@ -111,14 +114,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $query->bindParam(':user_req_id',$car_rec->user_req_id, PDO::PARAM_INT);
             $query->bindParam(':user_req_name',$user_req_name, PDO::PARAM_STR);
             $query->bindParam(':user_req_dep',$user_req_dep, PDO::PARAM_STR);
+            $query->bindParam(':user_req_workgroup',$user_req_workgroup, PDO::PARAM_STR);
             $query->bindParam(':location_name',$car_rec->location_name, PDO::PARAM_STR);            
             $query->bindParam(':why',$car_rec->why, PDO::PARAM_STR);            
             $query->bindParam(':followers_num',$car_rec->followers_num, PDO::PARAM_INT);            
             $query->bindParam(':use_begin',$use_begin, PDO::PARAM_STR);            
             $query->bindParam(':use_end',$use_end, PDO::PARAM_STR);            
             $query->bindParam(':status',$car_rec->status, PDO::PARAM_STR);            
-            $query->bindParam(':comment',$car_rec->comment, PDO::PARAM_STR);            
-            // $query->bindParam(':own_created',$car_rec->own_created, PDO::PARAM_STR);            
+            $query->bindParam(':comment',$car_rec->comment, PDO::PARAM_STR);                       
             $query->bindParam(':updated_at',$created_at, PDO::PARAM_STR);            
             $query->bindParam(':created_at',$created_at, PDO::PARAM_STR);
             $query->bindParam(':car_id',$car_rec->car_id, PDO::PARAM_INT);
@@ -155,6 +158,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ($query->rowCount() > 0) {
                     $user_req_name = $res_user->fname . $res_user->name . ' ' . $res_user->sname;
                     $user_req_dep = $res_user->dep;
+                    $user_req_workgroup = $res_user->workgroup;
                 }
             }
 
@@ -193,6 +197,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             user_req_id = :user_req_id,
                             user_req_name = :user_req_name,
                             user_req_dep = :user_req_dep,
+                            user_req_workgroup = :user_req_workgroup,
                             location_name = :location_name,
                             why = :why, 
                             followers_num = :followers_num,
@@ -215,6 +220,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $query->bindParam(':user_req_id', $car_rec->user_req_id, PDO::PARAM_INT);
             $query->bindParam(':user_req_name', $user_req_name, PDO::PARAM_STR);
             $query->bindParam(':user_req_dep', $user_req_dep, PDO::PARAM_STR);
+            $query->bindParam(':user_req_workgroup', $user_req_workgroup, PDO::PARAM_STR);
             $query->bindParam(':location_name', $car_rec->location_name, PDO::PARAM_STR);            
             $query->bindParam(':why', $car_rec->why, PDO::PARAM_STR);            
             $query->bindParam(':followers_num', $car_rec->followers_num, PDO::PARAM_INT);            
